@@ -73,7 +73,7 @@ class TasksController extends Controller
      */
     public function show($id)
     {
-         $task = Task::find($id);
+          $task = Task::find($id);
 
         if (\Auth::id() === $task->user_id) {
             return view('tasks.show', [
@@ -81,6 +81,7 @@ class TasksController extends Controller
         ]);
         }
         return redirect('/');
+
 }
 
     /**
@@ -91,7 +92,7 @@ class TasksController extends Controller
      */
     public function edit($id)
     {
-          $task = \App\Task::find($id);
+           $task = \App\Task::find($id);
 
         if (\Auth::id() === $task->user_id) {
             return view('tasks.edit', [
@@ -100,6 +101,8 @@ class TasksController extends Controller
         }
 
         return redirect('/');
+
+
     }
 
     /**
@@ -111,17 +114,22 @@ class TasksController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
+         
+         $task = \App\Task::find($id);
+        
+        if (\Auth::id() === $task->user_id) {
+            $this->validate($request, [
             'status' => 'required|max:10',
             'content' => 'required|max:191',
         ]);
-        $task = Task::find($id);
         $task->status = $request->status;
         $task->content = $request->content;
         $task->save();
-
+        }
         return redirect('/');
+        
     }
+
 
     /**
      * Remove the specified resource from storage.
@@ -131,10 +139,11 @@ class TasksController extends Controller
      */
     public function destroy($id)
     {
+        
         $task = \App\Task::find($id);
-
+        
         if (\Auth::id() === $task->user_id) {
-            $micropost->delete();
+            $task->delete();
         }
 
         return redirect('/');
